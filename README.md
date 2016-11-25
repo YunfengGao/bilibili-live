@@ -1,5 +1,5 @@
 # bilibili-live-php
-a php script for live.bilibili.com
+a php script for [live.bilibili.com](live.bilibili.com)
 
 ## Features
 - sign
@@ -8,13 +8,13 @@ a php script for live.bilibili.com
 - send daily gift to performer (roomid needed)
 
 ## Dependences
-- php-curl  
-- php-GD
+- php-curl  sudo apt-get install php-curl
+- php-gd  sudo apt-get install php-gd
 
 ## Usage
-php bilibili-live.php  
-php online.php  
-#### note: online.php should be run every 5 miniutes, so 'crontable' is recommended
+- php bilibili-live.php  
+- php online.php  
+**note**: online.php should be run every 5 miniutes, so 'crontable' in Linux is recommended
 
 ## TODO
 - participate in small TV draws
