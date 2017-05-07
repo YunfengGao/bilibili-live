@@ -8,8 +8,8 @@ a php script for [live.bilibili.com](live.bilibili.com)
 - send daily gift to performer (roomid needed)
 
 ## Dependences
-- php-curl  sudo apt-get install php-curl
-- php-gd  sudo apt-get install php-gd
+- php-curl  sudo apt-get install php-curl (in Ubuntu)
+- php-gd  sudo apt-get install php-gd (in Ubuntu)
 
 ## Usage
 - php bilibili-live.php  
