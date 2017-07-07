@@ -1,5 +1,5 @@
 # bilibili-live-php
-a php script for [live.bilibili.com](live.bilibili.com)
+a php script for [https://live.bilibili.com](live.bilibili.com)
 
 ## Features
 - sign
