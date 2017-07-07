@@ -1,17 +1,20 @@
-<?php  
+<?php
 include 'captcha.php';
 
-class bilibili{  
+class bilibili{
 
-    function __construct ($cookie, $referer) {
+    function __construct ($cookie, $rid, $uid) {
         $this -> ck = $cookie;
-        $this -> ref = 'http://live.bilibili.com/'.$referer;
+        $this -> ref = 'http://live.bilibili.com/'.$rid;
+        $this -> ruid = $uid;
+        $this -> rmid = $rid;
     }
 
-    private $useragent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36';
+    private $_USERAGENT='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36';
     private $ref;
     private $ck;
-
+    private $ruid;
+    private $rmid;
 
     private function get_kit() {
         for ($try = 0; $try < 2; $try++) {
@@ -34,11 +37,11 @@ class bilibili{
             echo "real wait time ".$wait_time."\n";
             #echo "Wait ".$raw['data']['minute']." minutes.\n";
             sleep($wait_time);
-            #echo "Get_captcha.\n";
+            echo "Get_captcha.\n";
             $img = self::curl("http://live.bilibili.com/freeSilver/getCaptcha?ts=".time());
-            $file_dir = "1.jpg";  
-            if($fp = fopen($file_dir,'w')){  
-                if(fwrite($fp,$img))  fclose($fp);      
+            $file_dir = "1.jpg";
+            if($fp = fopen($file_dir,'w')){
+                if(fwrite($fp,$img))  fclose($fp);
             }
             $captcha_value = get_ans($file_dir);
             $query = 'http://live.bilibili.com/freeSilver/getAward?time_start='.$ts.'&time_end='.$te.'&captcha='.$captcha_value;
@@ -46,7 +49,7 @@ class bilibili{
             $m=self::curl($query);
             #echo $m."\n";
             $status = json_decode($m, 1);
-            if ($status['msg'] == 'ok') 
+            if ($status['msg'] == 'ok')
                 return $status['data']['isEnd'];
         }
         return 1;
@@ -75,9 +78,9 @@ class bilibili{
     private function send_gift() {
         $daily_gift = 'http://live.bilibili.com/giftBag/sendDaily';
         $my_bag = 'http://live.bilibili.com/gift/playerBag';
-        $send_url = 'http://live.bilibili.com/giftBag/send'; 
-        $roomid = '11024';
-        $ruid = '4442718';
+        $send_url = 'http://api.live.bilibili.com/giftBag/send';
+        $roomid = $this -> rmid;
+        $ruid = $this -> ruid;
         $giftId = 0;
         $num = 0;
         $coinType = 'gold';
@@ -116,7 +119,7 @@ class bilibili{
                 $send_query .= "&timestamp=".$timestamp;
                 $send_query .= "&rnd=".$rnd;
                 $send_query .= "&token=".$token;
-                #echo $send_query."\n";
+                echo $send_query."\n";
                 $result = self::curl($send_url, $send_query);
                 #echo $result."\n";
             }
@@ -130,7 +133,7 @@ class bilibili{
         $fontsize = "25";
         $mode = "1";
         $rnd = time();
-        $roomid = "535511";
+        $roomid = $this -> rmid;
         $data = Array(
             "color" => $color,
             "fontsize" => $fontsize,
@@ -149,13 +152,13 @@ class bilibili{
         $d .= '&msg='.$msg;
         $d .= '&rnd='.$rnd;
         $d .= '&roomid='.$roomid;
-        $res = self::curl($msg_url, $data);
-        #echo $res."\n";
+        $res = self::curl($msg_url, $d);
+        #sometimes $data cannot use ? why ?
     }
 
     private function sign() {
         self::curl('http://live.bilibili.com/sign/doSign');
-        $status = json_decode(self::curl('http://live.bilibili.com/sign/GetSignInfo'), 1); 
+        $status = json_decode(self::curl('http://live.bilibili.com/sign/GetSignInfo'), 1);
         if ($status['code'] == 0)
             echo "Success Signed.\n";
         else
@@ -163,8 +166,9 @@ class bilibili{
     }
 
     public function work(){
-        self::get_token();
         self::sign();
+        #self::send_msg('-_-!!');
+        echo $this->ref;
         if (self::send_gift() == 1) echo "Send gifts error.\n";
         while (self::get_kit() == 0) sleep(10);
     }
@@ -180,28 +184,32 @@ class bilibili{
             'Accept: application/json, text/javascript, */*; q=0.01',
             'Origin: http://live.bilibili.com',
             'X-Requested-With: XMLHttpRequest',
-            'Accept-Language: en-US,en;q=0.8'
-        ); 
+            'Accept-Language: zh-CN,zh;q=0.8'
+        );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $hader);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, TRUE);
         curl_setopt($curl,CURLOPT_POSTFIELDS, $post_data);
         curl_setopt($curl,CURLOPT_COOKIE, $this -> ck);
-        curl_setopt($curl,CURLOPT_USERAGENT,$this->useragent);
+        curl_setopt($curl,CURLOPT_USERAGENT,$this->_USERAGENT);
         $result=curl_exec($curl);
         curl_close($curl);
         return $result;
     }
 }
 
-$cookies =  Array('add your cookie here');
+$arg =  Array(
+    'your cookie'
+    '11024',         # live_room_id
+    '4442718'      # zhubo_id
+);
 
 echo "=====================\n";
-echo Date('[Y-m-d H:m:s]', time())."\n";
+echo Date('[Y-m-d H:i:s]', time())."\n";
 
 $cnt = 1;
-foreach ($cookies as $ck) {
-    $usr = new bilibili($ck, '11024');
+for ($i = 0; $i < 3; $i += 3) {
+    $usr = new bilibili($arg[$i], $arg[$i+1], $arg[$i+2]);
     $usr -> work();
     echo "======= ".$cnt." ============\n";
     $cnt += 1;
