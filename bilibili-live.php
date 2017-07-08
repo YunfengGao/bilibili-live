@@ -199,7 +199,7 @@ class bilibili{
 }
 
 $arg =  Array(
-    'your cookie'
+    'your cookie',
     '11024',         # live_room_id
     '4442718'      # zhubo_id
 );
