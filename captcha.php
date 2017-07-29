@@ -99,7 +99,7 @@ function get_ans($url) {
             {  
                 $max = $percent;  
                 $num = $key;  
-                if(intval($percent) > 90)  {
+                if(intval($percent) > 95)  {
                     if ('0' <= $key && $key <= '9') {
                         if ($oper == -1) {
                             $a = $a * 10 + intval($key - '0');
