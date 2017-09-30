@@ -76,8 +76,8 @@ class bilibili{
     }
 
     private function send_gift() {
-        $daily_gift = 'http://live.bilibili.com/giftBag/sendDaily';
-        $my_bag = 'http://live.bilibili.com/gift/playerBag';
+        $daily_gift = 'http://live.bilibili.com/giftBag/sendDaily?_=';
+        $my_bag = 'http://live.bilibili.com/gift/playerBag?_=';
         $send_url = 'http://api.live.bilibili.com/giftBag/send';
         $roomid = $this -> rmid;
         $ruid = $this -> ruid;
