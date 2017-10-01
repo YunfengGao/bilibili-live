@@ -76,8 +76,8 @@ class bilibili{
     }
 
     private function send_gift() {
-        $daily_gift = 'http://live.bilibili.com/giftBag/sendDaily';
-        $my_bag = 'http://live.bilibili.com/gift/playerBag';
+        $daily_gift = 'http://api.live.bilibili.com/giftBag/sendDaily?_=';
+        $my_bag = 'http://api.live.bilibili.com/gift/playerBag?_=';
         $send_url = 'http://api.live.bilibili.com/giftBag/send';
         $roomid = $this -> rmid;
         $ruid = $this -> ruid;
@@ -128,7 +128,7 @@ class bilibili{
     }
 
     private function send_msg($msg) {
-        $msg_url = 'http://live.bilibili.com/msg/send';
+        $msg_url = 'http://api.live.bilibili.com/msg/send';
         $color = "16777215";
         $fontsize = "25";
         $mode = "1";
@@ -157,7 +157,7 @@ class bilibili{
     }
 
     private function sign() {
-        self::curl('http://live.bilibili.com/sign/doSign');
+        self::curl('http://api.live.bilibili.com/sign/doSign');
         $status = json_decode(self::curl('http://live.bilibili.com/sign/GetSignInfo'), 1);
         if ($status['code'] == 0)
             echo "Success Signed.\n";
